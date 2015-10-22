@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordProcessing", "WordProce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kata", "Kata\Kata.csproj", "{FE6FB40F-0FE5-469F-A365-D28A8BB6DA47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{57EBABDB-9DB9-4681-B6B5-E25050A5DC05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FE6FB40F-0FE5-469F-A365-D28A8BB6DA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE6FB40F-0FE5-469F-A365-D28A8BB6DA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE6FB40F-0FE5-469F-A365-D28A8BB6DA47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57EBABDB-9DB9-4681-B6B5-E25050A5DC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57EBABDB-9DB9-4681-B6B5-E25050A5DC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57EBABDB-9DB9-4681-B6B5-E25050A5DC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57EBABDB-9DB9-4681-B6B5-E25050A5DC05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

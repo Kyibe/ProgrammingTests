@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace CongestionCharge
 {
-    public class CongestionCharge
+    public class GlasgowCongestionCharge
     {
+        public GlasgowCongestionCharge(IVehicle vechical)
+        {
+
+        }
     }
 }
