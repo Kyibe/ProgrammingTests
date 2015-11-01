@@ -34,7 +34,7 @@ namespace UnitTests.CongestionCharges
         {
             //arrange
             _instance.StartTime = new DateTime(2008, 4, 26, 7, 0, 0);
-            _instance.FinishTime = new DateTime(2008, 4, 26, 19, 0, 0);
+            _instance.FinishTime = new DateTime(2008, 4, 27, 19, 0, 0);
 
             //act
             var actual = _instance.CalculateCharge();
