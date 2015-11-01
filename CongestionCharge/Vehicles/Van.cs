@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CongestionCharge.Interfaces;
+using System;
 
 namespace CongestionCharge.Vehicles
 {
     public class Van : IVehicle
     {
-        public DateTime FinishTime { get; set; }
-        public DateTime StartTime { get; set; }
+        public DateTime ExitTime { get; set; }
+        public DateTime EntryTime { get; set; }
 
         public decimal CalculateCharge()
         {
