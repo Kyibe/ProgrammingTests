@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Charges\Charge.cs" />
-    <Compile Include="Interfaces\IVehicle.cs" />
+    <Compile Include="Interfaces\Vehicle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vehicles\Car.cs" />
     <Compile Include="Vehicles\Motorbike.cs" />

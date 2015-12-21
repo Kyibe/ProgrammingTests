@@ -5,18 +5,15 @@ using System.Collections.Generic;
 
 namespace CongestionCharge.Vehicles
 {
-	public class Car : IVehicle
+	public class Car : Vehicle
 	{
-		public DateTime EntryTime { get; set; }
-		public DateTime ExitTime { get; set; }
-
-		public decimal CalculateCharge()
+		public Car()
 		{
 			var morningCharge = new Charge
 			{
-				StartTime = new DateTime(1, 1, 1, 7, 0, 0),
-				FinishTime = new DateTime(1, 1, 1, 12, 0, 0),
-				Rate = 2.0,
+				StartTime = new TimeSpan(7, 0, 0),
+				FinishTime = new TimeSpan(12, 0, 0),
+				Rate = 2.0M,
 				DaysChargeApplies = new List<DayOfWeek>
 				{
 					DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday
@@ -25,17 +22,19 @@ namespace CongestionCharge.Vehicles
 
 			var afternoonCharge = new Charge
 			{
-				StartTime = new DateTime(1, 1, 1, 12, 0, 0),
-				FinishTime = new DateTime(1, 1, 1, 19, 0, 0),
-				Rate = 2.5,
+				StartTime = new TimeSpan(12, 0, 0),
+				FinishTime = new TimeSpan(19, 0, 0),
+				Rate = 2.5M,
 				DaysChargeApplies = new List<DayOfWeek>
 				{
 					DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday
 				}
 			};
 
-			var charge = morningCharge.CalculateCharge(EntryTime, ExitTime) + afternoonCharge.CalculateCharge(EntryTime, ExitTime);
-			return Convert.ToDecimal(charge);
+			Charges = new List<Charge>
+			{
+				morningCharge, afternoonCharge
+			};
 		}
 	}
 }

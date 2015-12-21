@@ -1,53 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CongestionCharge.Charges
 {
+	[DebuggerDisplay("StartTime: {StartTime}, FinishTime {FinishTime}")]
 	public class Charge
 	{
-		//Might have to some validation on properties.
-		//What happens if start time is before finish time
-		//What about negative rate
-		//What about if no days a specified
-		public DateTime StartTime { get; set; }
-		public DateTime FinishTime { get; set; }
-		public double Rate { get; set; }
+		public TimeSpan StartTime { get; set; }
+		public TimeSpan FinishTime { get; set; }
+		public decimal Rate { get; set; }
 		public List<DayOfWeek> DaysChargeApplies { get; set; }
 
-		//assuming over one day only.
-		public double CalculateCharge(DateTime entryTime, DateTime leaveTime)
+		public bool IsValid()
 		{
-			if (IsTimeWithinCharge(entryTime))
-			{
-				var timeBetweenEntryAndLeave = GetTimeDifference(entryTime, leaveTime);
-				//Dont like this, this is working on a side affect. How does anyone know that if you pass null this happens
-				var timeBetweenEntryAndChargeFinish = GetTimeDifference(entryTime, null);
+			if (StartTime.TotalDays >= 1) return false;
+			if (FinishTime.TotalDays >= 1) return false;
+			if (FinishTime < StartTime) return false;
+			if (Rate < 0) return false;
 
-				var hoursInChargeZone = timeBetweenEntryAndLeave < timeBetweenEntryAndChargeFinish ? timeBetweenEntryAndLeave.TotalHours : timeBetweenEntryAndChargeFinish.TotalHours;
-
-				return hoursInChargeZone * Rate;
-			}
-
-			return 0;
+			return true;
 		}
 
-		private bool IsTimeWithinCharge(DateTime entryTime)
+		public decimal CalculateCharge(DateTime entryTime, DateTime leaveTime)
 		{
-			return DaysChargeApplies.Contains(entryTime.DayOfWeek)
-				&& entryTime.Hour >= StartTime.Hour
-				&& entryTime.Hour < FinishTime.Hour;
+			if (!IsValid()) { throw new ArgumentException("Charge is not valid. Please enter valid fields."); }
+			var timeInZone = GetTimeWithinZone(entryTime, leaveTime, new TimeSpan());
+			//Horrible!
+			return CalulateValueOfCharge(timeInZone);
 		}
 
-		private TimeSpan GetTimeDifference(DateTime entryTime, DateTime? leaveTime)
+		private decimal CalulateValueOfCharge(TimeSpan timeInZone)
 		{
-			// don't like this
-			if (leaveTime == null)
+			return Math.Floor((((decimal)timeInZone.TotalMinutes / 60M) * Rate) * 10) / 10;
+		}
+
+		private TimeSpan GetTimeWithinZone(DateTime entryTime, DateTime leaveTime, TimeSpan timeInZone)
+		{
+			if (IsChargableTime(entryTime, leaveTime))
 			{
-				leaveTime = new DateTime(entryTime.Year, entryTime.Month, entryTime.Day,
-										FinishTime.Hour, FinishTime.Minute, FinishTime.Second);
+				timeInZone += GetAmountOfTimeInZone(entryTime, leaveTime);
 			}
 
-			return leaveTime - entryTime ?? new TimeSpan();
+			if (HasAnotherDayInChargeZone(entryTime, leaveTime))
+			{
+				//What happens on the last day of month
+				var startOfNextDay = new DateTime(entryTime.Year, entryTime.Month, entryTime.Day + 1);
+				return GetTimeWithinZone(startOfNextDay, leaveTime, timeInZone);
+			}
+
+			return timeInZone;
+		}
+
+		private bool IsChargableTime(DateTime entryTime, DateTime leaveTime)
+		{
+			return DaysChargeApplies.Contains(entryTime.DayOfWeek);
+		}
+
+		private bool HasAnotherDayInChargeZone(DateTime entryTime, DateTime leaveTime)
+		{
+			return entryTime.Day != leaveTime.Day;
+		}
+
+		private TimeSpan GetAmountOfTimeInZone(DateTime entryTime, DateTime leaveTime)
+		{
+			var timeToStartCharge = entryTime.TimeOfDay > StartTime
+										? entryTime.TimeOfDay
+										: StartTime;
+
+			var timeToEndCharge = FindTimeToEndCharge(entryTime, leaveTime);
+
+
+			var amountOfTimeInZone = timeToEndCharge - timeToStartCharge;
+			return amountOfTimeInZone < new TimeSpan()
+							? new TimeSpan()
+							: amountOfTimeInZone;
+		}
+
+		private TimeSpan FindTimeToEndCharge(DateTime entryTime, DateTime leaveTime)
+		{
+			if (!entryTime.Date.Equals(leaveTime.Date)) { return FinishTime; }
+
+			return leaveTime.TimeOfDay > FinishTime
+									? FinishTime
+									: leaveTime.TimeOfDay;
 		}
 	}
 }
