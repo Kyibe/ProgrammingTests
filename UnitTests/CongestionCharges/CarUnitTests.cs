@@ -129,6 +129,20 @@ namespace UnitTests.CongestionCharges
 		}
 
 		[Test]
+		public void CarCharge_WHERE_multiple_days_and_different_months_and_year()
+		{
+			//arrange
+			_instance.EntryTime = new DateTime(2008, 12, 31, 16, 0, 0);
+			_instance.ExitTime = new DateTime(2009, 1, 1, 11, 0, 0);
+
+			//act
+			var actual = _instance.CalculateCharge();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(15.5));
+		}
+
+		[Test]
 		public void CarCharge_WHERE_multiple_day_with_weekend_AM_and_PM_charges()
 		{
 			//arrange

@@ -9,7 +9,7 @@ namespace CongestionCharge.Interfaces
 	{
 		public DateTime ExitTime { get; set; }
 		public DateTime EntryTime { get; set; }
-		public List<Charge> Charges { get; set; }
+		public abstract List<Charge> Charges { get; }
 
 		public decimal CalculateCharge()
 		{

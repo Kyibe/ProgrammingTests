@@ -54,7 +54,7 @@ namespace UnitTests.CongestionCharges
 			var actual = _instance.CalculateCharge();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(2));
+			Assert.That(actual, Is.EqualTo(1));
 		}
 
 		[Test]
@@ -68,7 +68,7 @@ namespace UnitTests.CongestionCharges
 			var actual = _instance.CalculateCharge();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(2.5));
+			Assert.That(actual, Is.EqualTo(1));
 		}
 
 
@@ -83,21 +83,21 @@ namespace UnitTests.CongestionCharges
 			var actual = _instance.CalculateCharge();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(7.6));
+			Assert.That(actual, Is.EqualTo(3.1));
 		}
 
 		[Test]
 		public void MotorBikeCharge_WHERE_multiple_days()
 		{
 			//arrange
-			_instance.EntryTime = new DateTime(2008, 4, 25, 14, 0, 0);
-			_instance.ExitTime = new DateTime(2008, 4, 26, 11, 0, 0);
+			_instance.EntryTime = new DateTime(2008, 4, 24, 14, 0, 0);
+			_instance.ExitTime = new DateTime(2008, 4, 25, 11, 0, 0);
 
 			//act
 			var actual = _instance.CalculateCharge();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(20.5));
+			Assert.That(actual, Is.EqualTo(9));
 		}
 
 
@@ -112,7 +112,7 @@ namespace UnitTests.CongestionCharges
 			var actual = _instance.CalculateCharge();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(24.8));
+			Assert.That(actual, Is.EqualTo(11.3));
 		}
 	}
 }

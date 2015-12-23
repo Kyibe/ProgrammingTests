@@ -12,6 +12,14 @@ namespace CongestionCharge.Charges
 		public decimal Rate { get; set; }
 		public List<DayOfWeek> DaysChargeApplies { get; set; }
 
+		public Charge(TimeSpan startTime, TimeSpan finishTime, decimal rate, List<DayOfWeek> daysChargeApplies)
+		{
+			StartTime = startTime;
+			FinishTime = finishTime;
+			Rate = rate;
+			DaysChargeApplies = daysChargeApplies;
+		}
+
 		public bool IsValid()
 		{
 			if (StartTime.TotalDays >= 1) return false;
@@ -26,13 +34,14 @@ namespace CongestionCharge.Charges
 		{
 			if (!IsValid()) { throw new ArgumentException("Charge is not valid. Please enter valid fields."); }
 			var timeInZone = GetTimeWithinZone(entryTime, leaveTime, new TimeSpan());
-			//Horrible!
 			return CalulateValueOfCharge(timeInZone);
 		}
 
 		private decimal CalulateValueOfCharge(TimeSpan timeInZone)
 		{
-			return Math.Floor((((decimal)timeInZone.TotalMinutes / 60M) * Rate) * 10) / 10;
+			var totalHours = (decimal)timeInZone.TotalMinutes / 60M;
+			var exactCharge = totalHours * Rate;
+			return Math.Floor(exactCharge * 10) / 10;
 		}
 
 		private TimeSpan GetTimeWithinZone(DateTime entryTime, DateTime leaveTime, TimeSpan timeInZone)
@@ -44,8 +53,7 @@ namespace CongestionCharge.Charges
 
 			if (HasAnotherDayInChargeZone(entryTime, leaveTime))
 			{
-				//What happens on the last day of month
-				var startOfNextDay = new DateTime(entryTime.Year, entryTime.Month, entryTime.Day + 1);
+				var startOfNextDay = entryTime.Date.AddDays(1);
 				return GetTimeWithinZone(startOfNextDay, leaveTime, timeInZone);
 			}
 

@@ -7,21 +7,20 @@ namespace CongestionCharge.Vehicles
 {
 	public class MotorBike : Vehicle
 	{
-		public MotorBike()
+		public override List<Charge> Charges
 		{
-			Charges = new List<Charge>
+			get
 			{
-				new Charge
+				var daysChargeApplies = new List<DayOfWeek>
 				{
-					StartTime = new TimeSpan(7, 0, 0),
-					FinishTime = new TimeSpan(19, 0, 0),
-					Rate = 1M,
-					DaysChargeApplies = new List<DayOfWeek>
-					{
-						DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday
-					}
-				}
-			};
+					DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday
+				};
+
+				return new List<Charge>
+				{
+					new Charge(new TimeSpan(7, 0, 0), new TimeSpan(19, 0, 0), 1M,daysChargeApplies)
+				};
+			}
 		}
 	}
 }
