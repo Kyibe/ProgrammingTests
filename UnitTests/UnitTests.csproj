@@ -49,6 +49,7 @@
     <Compile Include="Katas\KataUnitTests.cs" />
     <Compile Include="CongestionCharges\CarUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TennisScoring\TennisScoringUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
