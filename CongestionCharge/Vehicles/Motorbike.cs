@@ -1,11 +1,12 @@
-﻿using CongestionCharge.Charges;
-using CongestionCharge.Interfaces;
-using System;
-using System.Collections.Generic;
-
-namespace CongestionCharge.Vehicles
+﻿namespace CongestionCharge.Core.Vehicles
 {
-	public class MotorBike : Vehicle
+    using System;
+    using System.Collections.Generic;
+
+    using CongestionCharge.Core.Charges;
+    using CongestionCharge.Core.Interfaces;
+
+    public class MotorBike : Vehicle
 	{
 		public override List<Charge> Charges
 		{
@@ -18,7 +19,7 @@ namespace CongestionCharge.Vehicles
 
 				return new List<Charge>
 				{
-					new Charge(new TimeSpan(7, 0, 0), new TimeSpan(19, 0, 0), 1M,daysChargeApplies)
+					new Charge(new TimeSpan(7, 0, 0), new TimeSpan(19, 0, 0), 1M, daysChargeApplies)
 				};
 			}
 		}

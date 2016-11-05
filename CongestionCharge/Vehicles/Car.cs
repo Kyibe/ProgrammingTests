@@ -1,11 +1,12 @@
-﻿using CongestionCharge.Charges;
-using CongestionCharge.Interfaces;
-using System;
-using System.Collections.Generic;
-
-namespace CongestionCharge.Vehicles
+﻿namespace CongestionCharge.Core.Vehicles
 {
-	public class Car : Vehicle
+    using System;
+    using System.Collections.Generic;
+
+    using CongestionCharge.Core.Charges;
+    using CongestionCharge.Core.Interfaces;
+
+    public class Car : Vehicle
 	{
 		public override List<Charge> Charges
 		{

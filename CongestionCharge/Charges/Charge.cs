@@ -1,97 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace CongestionCharge.Charges
+﻿namespace CongestionCharge.Core.Charges
 {
-	[DebuggerDisplay("StartTime: {StartTime}, FinishTime {FinishTime}")]
-	public class Charge
-	{
-		public TimeSpan StartTime { get; set; }
-		public TimeSpan FinishTime { get; set; }
-		public decimal Rate { get; set; }
-		public List<DayOfWeek> DaysChargeApplies { get; set; }
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
 
-		public Charge(TimeSpan startTime, TimeSpan finishTime, decimal rate, List<DayOfWeek> daysChargeApplies)
-		{
-			StartTime = startTime;
-			FinishTime = finishTime;
-			Rate = rate;
-			DaysChargeApplies = daysChargeApplies;
-		}
+    [DebuggerDisplay("StartTime: {StartTime}, FinishTime {FinishTime}")]
+    public class Charge
+    {
+        public TimeSpan StartTime { get; }
+        public TimeSpan FinishTime { get; }
+        public decimal Rate { get; set; }
+        public List<DayOfWeek> DaysChargeApplies { get; set; }
 
-		public bool IsValid()
-		{
-			if (StartTime.TotalDays >= 1) return false;
-			if (FinishTime.TotalDays >= 1) return false;
-			if (FinishTime < StartTime) return false;
-			if (Rate < 0) return false;
+        public Charge(TimeSpan startTime, TimeSpan finishTime, decimal chargePerHour, List<DayOfWeek> daysChargeApplies)
+        {
+            this.StartTime = startTime;
+            this.FinishTime = finishTime;
+            this.Rate = chargePerHour;
+            this.DaysChargeApplies = daysChargeApplies;
 
-			return true;
-		}
+            if (!this.IsValid()) { throw new ArgumentException("Dates are not valid. Please enter valid Dates."); }
+        }
 
-		public decimal CalculateCharge(DateTime entryTime, DateTime leaveTime)
-		{
-			if (!IsValid()) { throw new ArgumentException("Charge is not valid. Please enter valid fields."); }
-			var timeInZone = GetTimeWithinZone(entryTime, leaveTime, new TimeSpan());
-			return CalulateValueOfCharge(timeInZone);
-		}
+        public bool IsValid()
+        {
+            if (this.StartTime.TotalDays >= 1) return false;
+            if (this.FinishTime.TotalDays >= 1) return false;
+            if (this.FinishTime < this.StartTime) return false;
+            if (this.Rate < 0) return false;
 
-		private decimal CalulateValueOfCharge(TimeSpan timeInZone)
-		{
-			var totalHours = (decimal)timeInZone.TotalMinutes / 60M;
-			var exactCharge = totalHours * Rate;
-			return Math.Floor(exactCharge * 10) / 10;
-		}
+            return true;
+        }
 
-		private TimeSpan GetTimeWithinZone(DateTime entryTime, DateTime leaveTime, TimeSpan timeInZone)
-		{
-			if (IsChargableTime(entryTime, leaveTime))
-			{
-				timeInZone += GetAmountOfTimeInZone(entryTime, leaveTime);
-			}
+        public decimal CalculatingCongustionCharge(DateTime entryTime, DateTime leaveTime)
+        {
+            var timeInZone = this.GetTimeWithinZone(entryTime, leaveTime, new TimeSpan());
+            return this.CalulateValueOfCharge(timeInZone);
+        }
 
-			if (HasAnotherDayInChargeZone(entryTime, leaveTime))
-			{
-				var startOfNextDay = entryTime.Date.AddDays(1);
-				return GetTimeWithinZone(startOfNextDay, leaveTime, timeInZone);
-			}
+        private decimal CalulateValueOfCharge(TimeSpan timeInZone)
+        {
+            var totalHours = (decimal)timeInZone.TotalMinutes / 60M;
+            var exactCharge = totalHours * this.Rate;
+            return Math.Floor(exactCharge * 10) / 10;
+        }
 
-			return timeInZone;
-		}
+        private TimeSpan GetTimeWithinZone(DateTime entryTime, DateTime leaveTime, TimeSpan timeInZone)
+        {
+            if (this.IsChargableTime(entryTime, leaveTime))
+            {
+                timeInZone += this.GetAmountOfTimeInZone(entryTime, leaveTime);
+            }
 
-		private bool IsChargableTime(DateTime entryTime, DateTime leaveTime)
-		{
-			return DaysChargeApplies.Contains(entryTime.DayOfWeek);
-		}
+            if (this.HasAnotherDayInChargeZone(entryTime, leaveTime))
+            {
+                var startOfNextDay = entryTime.Date.AddDays(1);
+                return this.GetTimeWithinZone(startOfNextDay, leaveTime, timeInZone);
+            }
 
-		private bool HasAnotherDayInChargeZone(DateTime entryTime, DateTime leaveTime)
-		{
-			return entryTime.Day != leaveTime.Day;
-		}
+            return timeInZone;
+        }
 
-		private TimeSpan GetAmountOfTimeInZone(DateTime entryTime, DateTime leaveTime)
-		{
-			var timeToStartCharge = entryTime.TimeOfDay > StartTime
-										? entryTime.TimeOfDay
-										: StartTime;
+        private bool IsChargableTime(DateTime entryTime, DateTime leaveTime)
+        {
+            return this.DaysChargeApplies.Contains(entryTime.DayOfWeek);
+        }
 
-			var timeToEndCharge = FindTimeToEndCharge(entryTime, leaveTime);
+        private bool HasAnotherDayInChargeZone(DateTime entryTime, DateTime leaveTime)
+        {
+            return entryTime.Day != leaveTime.Day;
+        }
+
+        private TimeSpan GetAmountOfTimeInZone(DateTime entryTime, DateTime leaveTime)
+        {
+            var timeToStartCharge = entryTime.TimeOfDay > this.StartTime
+                                        ? entryTime.TimeOfDay
+                                        : this.StartTime;
+
+            var timeToEndCharge = this.FindTimeToEndCharge(entryTime, leaveTime);
 
 
-			var amountOfTimeInZone = timeToEndCharge - timeToStartCharge;
-			return amountOfTimeInZone < new TimeSpan()
-							? new TimeSpan()
-							: amountOfTimeInZone;
-		}
+            var amountOfTimeInZone = timeToEndCharge - timeToStartCharge;
+            return amountOfTimeInZone < new TimeSpan()
+                            ? new TimeSpan()
+                            : amountOfTimeInZone;
+        }
 
-		private TimeSpan FindTimeToEndCharge(DateTime entryTime, DateTime leaveTime)
-		{
-			if (!entryTime.Date.Equals(leaveTime.Date)) { return FinishTime; }
+        private TimeSpan FindTimeToEndCharge(DateTime entryTime, DateTime leaveTime)
+        {
+            if (!entryTime.Date.Equals(leaveTime.Date)) { return this.FinishTime; }
 
-			return leaveTime.TimeOfDay > FinishTime
-									? FinishTime
-									: leaveTime.TimeOfDay;
-		}
-	}
+            return leaveTime.TimeOfDay > this.FinishTime
+                                    ? this.FinishTime
+                                    : leaveTime.TimeOfDay;
+        }
+    }
 }

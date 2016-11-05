@@ -1,19 +1,22 @@
-﻿using CongestionCharge.Charges;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CongestionCharge.Interfaces
-{
-	public abstract class Vehicle
-	{
-		public DateTime ExitTime { get; set; }
-		public DateTime EntryTime { get; set; }
-		public abstract List<Charge> Charges { get; }
+using CongestionCharge.Core.Charges;
 
-		public decimal CalculateCharge()
-		{
-			return Charges.Sum(x => x.CalculateCharge(EntryTime, ExitTime));
-		}
-	}
+namespace CongestionCharge.Core.Interfaces
+{
+
+
+    public abstract class Vehicle
+    {
+        public DateTime ExitTime { get; set; }
+        public DateTime EntryTime { get; set; }
+        public abstract List<Charge> Charges { get; }
+
+        public decimal CalculateCharge()
+        {
+            return this.Charges.Sum(x => x.CalculatingCongustionCharge(this.EntryTime, this.ExitTime));
+        }
+    }
 }

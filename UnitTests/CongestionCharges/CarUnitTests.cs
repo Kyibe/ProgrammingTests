@@ -1,8 +1,8 @@
-﻿using CongestionCharge.Vehicles;
+﻿using System;
+using CongestionCharge.Core.Vehicles;
 using NUnit.Framework;
-using System;
 
-namespace UnitTests.CongestionCharges
+namespace UnitTests.Core.CongestionCharges
 {
 	[TestFixture]
 	public class CarUnitTests
@@ -18,56 +18,56 @@ namespace UnitTests.CongestionCharges
 		[Test]
 		public void CarCharge_WHERE_out_of_hours()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 19, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 25, 7, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(0));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_weekend_charge()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 26, 7, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 27, 19, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(0));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_Am_Charge()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 11, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 24, 12, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(2));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_Pm_Charge()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 12, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 24, 13, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(2.5));
 		}
 
@@ -75,84 +75,84 @@ namespace UnitTests.CongestionCharges
 		[Test]
 		public void CarCharge_WHERE_AM_and_PM_charges()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 11, 32, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 24, 14, 42, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(7.6));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_multiple_days()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 14, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 25, 11, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(20.5));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_multiple_days_and_over_24_hours()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 14, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 25, 16, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(32.5));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_multiple_days_and_starts_in_the_pm()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 24, 16, 0, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 25, 11, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(15.5));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_multiple_days_and_different_months_and_year()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 12, 31, 16, 0, 0);
 			_instance.ExitTime = new DateTime(2009, 1, 1, 11, 0, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(15.5));
 		}
 
 		[Test]
 		public void CarCharge_WHERE_multiple_day_with_weekend_AM_and_PM_charges()
 		{
-			//arrange
+			// arrange
 			_instance.EntryTime = new DateTime(2008, 4, 25, 10, 23, 0);
 			_instance.ExitTime = new DateTime(2008, 4, 28, 9, 42, 0);
 
-			//act
+			// act
 			var actual = _instance.CalculateCharge();
 
-			//assert
+			// assert
 			Assert.That(actual, Is.EqualTo(26.1));
 		}
 	}
